@@ -55,9 +55,10 @@ bool q_insert_head(queue_t *q, char *s)
     newh->next = q->head;
     newh->value = malloc(strlen(s) + 1);
     if (!(newh->value)) {
+        free(newh);
         return false;
     }
-    strcpy(newh->value, s, strlen(s));
+    strncpy(newh->value, s, strlen(s));
     q->head = newh;
     return true;
 }
