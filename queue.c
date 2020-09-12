@@ -60,6 +60,7 @@ bool q_insert_head(queue_t *q, char *s)
     }
     strncpy(newh->value, s, strlen(s));
     q->head = newh;
+    q->size = q->size + 1;
     return true;
 }
 
