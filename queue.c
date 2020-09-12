@@ -81,7 +81,7 @@ bool q_insert_tail(queue_t *q, char *s)
     if (!newt)
         return false;
     newt->value = malloc(strlen(s) + 1);
-    if (newt->value) {
+    if (!(newt->value)) {
         free(newt);
         return false;
     }
