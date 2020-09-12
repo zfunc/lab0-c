@@ -25,7 +25,7 @@ void q_free(queue_t *q)
     }
     list_ele_t *cur = q->head;
     while (cur) {
-        list_ele_t *tmp = cur->head;
+        list_ele_t *tmp = cur->next;
         free(cur->value);
         free(cur);
         cur = tmp;
