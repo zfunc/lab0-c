@@ -110,6 +110,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
         strncpy(sp, old->value, bufsize - 1);
     }
     q->head = q->head->next;
+    q->size -= 1;
 
     free(old->value);
     free(old);
