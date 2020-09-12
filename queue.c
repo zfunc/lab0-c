@@ -61,6 +61,8 @@ bool q_insert_head(queue_t *q, char *s)
         return false;
     }
     strncpy(newh->value, s, strlen(s) + 1);
+    if (q->size == 0)
+        q->tail = newh;
     q->head = newh;
     q->size = q->size + 1;
     return true;
@@ -75,7 +77,7 @@ bool q_insert_head(queue_t *q, char *s)
  */
 bool q_insert_tail(queue_t *q, char *s)
 {
-    if (!q || !(q->tail))
+    if (!q)
         return false;
     list_ele_t *newt = malloc(sizeof(list_ele_t));
     if (!newt)
@@ -86,13 +88,16 @@ bool q_insert_tail(queue_t *q, char *s)
         return false;
     }
     strncpy(newt->value, s, strlen(s) + 1);
-    q->tail->next = newt;
+    newt->next = NULL;
+    if (!(q->tail)) {
+        q->head = newt;
+    } else {
+        q->tail->next = newt;
+    }
     q->tail = newt;
     q->size += 1;
-
     return true;
 }
-
 /*
  * Attempt to remove element from head of queue.
  * Return true if successful.
