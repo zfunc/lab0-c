@@ -1,10 +1,14 @@
 #include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 
 #include "harness.h"
 #include "queue.h"
 
+static unsigned min(int, int);
+static list_ele_t *merge_sort(list_ele_t *l, int);
+static list_ele_t *merge(list_ele_t *l, list_ele_t *r, int);
 /*
  * Create empty queue.
  * Return NULL if could not allocate space.
@@ -175,8 +179,75 @@ void q_reverse(queue_t *q)
  * No effect if q is NULL or empty. In addition, if q has only one
  * element, do nothing.
  */
+
+
+
 void q_sort(queue_t *q)
 {
+    if (!q || !(q->head) || !(q->head->next))
+        return;
+    q->head = merge_sort(q->head, q->size);
+    list_ele_t *tail = q->tail;
+    for (; tail->next != NULL; tail = tail->next)
+        ;
+    q->tail = tail;
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+}
+
+static list_ele_t *merge(list_ele_t *l, list_ele_t *r, int size)
+{
+    list_ele_t *idx = NULL, *head = NULL;
+    while (size--) {
+        if (!r || (l && strncmp(l->value, r->value,
+                                min(strlen(l->value), strlen(r->value))) < 1)) {
+            if (idx == NULL) {
+                head = idx = l;
+            } else {
+                idx->next = l;
+                idx = idx->next;
+            }
+            l = l->next;
+        } else {
+            if (idx == NULL) {
+                head = idx = r;
+            } else {
+                idx->next = r;
+                idx = idx->next;
+            }
+            r = r->next;
+        }
+    }
+    return head;
+}
+
+static list_ele_t *merge_sort(list_ele_t *l, int size)
+{
+    if (!l || size <= 1) {
+        return l;
+    }
+    list_ele_t *r = l;
+    int i;
+    for (i = 0; i < size / 2; i++)
+        r = r->next;
+    if (l == r)
+        return l;
+
+    list_ele_t *ll = merge_sort(l, size / 2);
+    list_ele_t *tmp = ll;
+    for (i = 0; i < size / 2 - 1; i++)
+        tmp = tmp->next;
+    tmp->next = NULL;
+    list_ele_t *rl = merge_sort(r, (size + 1) / 2);
+    tmp = rl;
+    for (i = 0; i < (size + 1) / 2 - 1; i++)
+        tmp = tmp->next;
+    tmp->next = NULL;
+    list_ele_t *merged = merge(ll, rl, size);
+    return merged;
+}
+
+static unsigned min(int a, int b)
+{
+    return (a < b ? a : b);
 }
