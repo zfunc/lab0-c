@@ -6,9 +6,9 @@
 #include "harness.h"
 #include "queue.h"
 
-static unsigned min(int, int);
-static list_ele_t *merge_sort(list_ele_t *l, int);
-static list_ele_t *merge(list_ele_t *l, list_ele_t *r, int);
+static bool compare(char *, char *);
+static list_ele_t *merge_sort(list_ele_t *, int);
+static list_ele_t *merge(list_ele_t *, list_ele_t *, int);
 /*
  * Create empty queue.
  * Return NULL if could not allocate space.
@@ -199,8 +199,7 @@ static list_ele_t *merge(list_ele_t *l, list_ele_t *r, int size)
 {
     list_ele_t *idx = NULL, *head = NULL;
     while (size--) {
-        if (!r || (l && strncmp(l->value, r->value,
-                                min(strlen(l->value), strlen(r->value))) < 1)) {
+        if (!r || (l && compare(l->value, r->value))) {
             if (idx == NULL) {
                 head = idx = l;
             } else {
@@ -247,7 +246,16 @@ static list_ele_t *merge_sort(list_ele_t *l, int size)
     return merged;
 }
 
-static unsigned min(int a, int b)
+static bool compare(char *a, char *b)
 {
-    return (a < b ? a : b);
+    int i, j;
+    unsigned lena = strlen(a);
+    unsigned lenb = strlen(b);
+
+    for (i = 0, j = 0; i < lena && j < lenb; i++, j++) {
+        if (a[i] != b[j])
+            return a[i] < b[j];
+    }
+
+    return lena <= lenb;
 }
